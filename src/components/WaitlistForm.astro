@@ -43,6 +43,10 @@ const okId = `ok-${id}`;
     <p class="success-body">{t.success.body}</p>
     <p class="success-body already" style="display:none">{t.success.alreadyBody}</p>
   </div>
+
+  <p class="field-error" id={`err-${id}`} role="alert" aria-live="polite" style="display:none">
+    Something went wrong — please try again.
+  </p>
 </div>
 
 <script>
@@ -61,27 +65,38 @@ const okId = `ok-${id}`;
     return m ? m[1] : 'en';
   }
 
+  function showError(formId: string) {
+    const errEl = document.getElementById(`err-${formId}`) as HTMLElement | null;
+    if (errEl) {
+      errEl.style.display = 'block';
+      setTimeout(() => { errEl.style.display = 'none'; }, 5000);
+    }
+  }
+
   function showSuccess(okId: string, already = false) {
     const ok = document.getElementById(okId);
     if (!ok) return;
     const formId = okId.replace('ok-', 'form-');
     const form = document.getElementById(formId);
     if (form) form.style.display = 'none';
+    // Hide error if visible
+    const errEl = document.getElementById(`err-${formId}`);
+    if (errEl) errEl.style.display = 'none';
+
     ok.classList.add('on');
     if (already) {
-      ok.querySelector('.success-body:not(.already)')?.setAttribute('style', 'display:none');
+      (ok.querySelector('.success-body:not(.already)') as HTMLElement | null)?.style.setProperty('display', 'none');
       const alreadyEl = ok.querySelector('.already') as HTMLElement | null;
       if (alreadyEl) alreadyEl.style.display = '';
     }
     ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-    // Trigger Rive celebrate
     window.dispatchEvent(new CustomEvent('partnerly:signup', { detail: { already } }));
   }
 
   async function handleJoin(formId: string) {
     const inputEl = document.getElementById(`email-${formId}`) as HTMLInputElement | null;
     if (!inputEl) return;
+
     const email = inputEl.value.trim();
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!re.test(email)) {
@@ -96,26 +111,33 @@ const okId = `ok-${id}`;
 
     const okId = `ok-${formId}`;
 
+    // No Supabase configured → mock success (dev/preview mode)
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+      console.warn('[Partnerly] Supabase not configured — mocking success.');
       showSuccess(okId);
       return;
     }
 
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const { error } = await supabase.from('waitlist').insert({
-      email,
-      source: getSource(),
-      locale: getLocale(),
-    });
+    try {
+      const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const { error } = await supabase.from('waitlist').insert({
+        email,
+        source: getSource(),
+        locale: getLocale(),
+      });
 
-    // 23505 = unique_violation (email already in list) → treat as success
-    const already = error?.code === '23505';
-    if (!error || already) {
-      showSuccess(okId, already);
-    } else {
-      // Re-enable on unexpected error
+      // 23505 = unique_violation → email already registered, treat as success
+      if (!error || error.code === '23505') {
+        showSuccess(okId, error?.code === '23505');
+      } else {
+        console.error('[Partnerly] Supabase insert error:', error.code, error.message);
+        if (btn) { btn.disabled = false; btn.style.opacity = ''; }
+        showError(formId);
+      }
+    } catch (err) {
+      console.error('[Partnerly] Unexpected error:', err);
       if (btn) { btn.disabled = false; btn.style.opacity = ''; }
-      console.error('Waitlist error', error);
+      showError(formId);
     }
   }
 
@@ -233,6 +255,15 @@ const okId = `ok-${id}`;
     place-items: center;
     color: #fff;
     flex: none;
+  }
+
+  .field-error {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--glow-coral);
+    margin-top: 14px;
+    padding-left: 8px;
+    animation: rise .3s cubic-bezier(0,0,.2,1);
   }
 
   @media (max-width: 480px) {
