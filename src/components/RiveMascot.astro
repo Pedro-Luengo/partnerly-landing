@@ -95,13 +95,13 @@
     position: relative;
     display: grid;
     place-items: center;
-    min-height: 440px;
+    min-height: 540px;
   }
 
   .halo {
     position: absolute;
-    width: 380px;
-    height: 380px;
+    width: 620px;
+    height: 620px;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(255,177,84,.5), rgba(255,138,91,.18) 55%, transparent 72%);
     filter: blur(8px);
@@ -112,8 +112,8 @@
     display: none;
     position: relative;
     z-index: 1;
-    width: 340px;
-    height: 380px;
+    width: 440px;
+    height: 440px;
   }
 
   .mascot-placeholder {
@@ -122,7 +122,7 @@
     animation: float 5.5s ease-in-out infinite;
   }
 
-  .mascot-svg { display: block; }
+  .mascot-svg { display: block; width: 440px; height: 440px; }
 
   .spark {
     position: absolute;
@@ -130,14 +130,14 @@
     background: var(--xp-yellow);
     box-shadow: 0 0 12px var(--xp-yellow);
   }
-  .s1 { width: 14px; height: 14px; top: 8%; right: 14%; animation: twinkle 3s ease-in-out infinite; }
-  .s2 { width:  9px; height:  9px; top: 24%; left:  8%; animation: twinkle 3s ease-in-out infinite .8s; }
-  .s3 { width: 11px; height: 11px; bottom: 18%; right: 6%; animation: twinkle 3s ease-in-out infinite 1.6s; }
+  .s1 { width: 15px; height: 15px; top: 8%; right: 14%; animation: twinkle 3s ease-in-out infinite; }
+  .s2 { width: 10px; height: 10px; top: 24%; left:  8%; animation: twinkle 3s ease-in-out infinite .8s; }
+  .s3 { width: 12px; height: 12px; bottom: 18%; right: 6%; animation: twinkle 3s ease-in-out infinite 1.6s; }
 
   @media (max-width: 860px) {
-    .mascot-stage { min-height: 320px; }
-    .halo { width: 300px; height: 300px; }
-    .mascot-canvas { width: 260px; height: 290px; }
-    .mascot-svg { width: 178px; height: 200px; }
+    .mascot-stage { min-height: 340px; }
+    .halo { width: 380px; height: 380px; }
+    .mascot-canvas { width: 280px; height: 280px; }
+    .mascot-svg { width: 280px; height: 280px; }
   }
 </style>

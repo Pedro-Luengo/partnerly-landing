@@ -37,12 +37,12 @@ const { t, locale } = Astro.props;
 
 <style>
   .hero-header {
-    padding: 104px 0 80px;
+    padding: 88px 0 68px;
   }
 
   .hero-grid {
     display: grid;
-    grid-template-columns: 1.05fr .95fr;
+    grid-template-columns: .95fr 1.05fr;
     gap: 84px;
     align-items: center;
   }
@@ -101,7 +101,7 @@ const { t, locale } = Astro.props;
   .hero-visual { order: 2; }
 
   @media (max-width: 860px) {
-    .hero-header { padding: 64px 0 56px; }
+    .hero-header { padding: 54px 0 48px; }
     .hero-grid {
       grid-template-columns: 1fr;
       gap: 16px;

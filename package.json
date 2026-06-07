@@ -14,6 +14,7 @@
     "@fontsource/plus-jakarta-sans": "^5.1.1",
     "@rive-app/canvas": "^2.23.9",
     "@supabase/supabase-js": "^2.47.10",
+    "@vercel/analytics": "^2.0.1",
     "astro": "^5.1.1"
   },
   "devDependencies": {

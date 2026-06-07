@@ -3,6 +3,7 @@ import type { Locale } from '../i18n/index';
 import type { Translations } from '../i18n/en';
 import ConsentBanner from '../components/ConsentBanner.astro';
 import Analytics from '../components/Analytics.astro';
+import VercelAnalytics from '../components/VercelAnalytics.astro';
 
 // Self-hosted font CSS
 import '@fontsource/plus-jakarta-sans/400.css';
@@ -82,6 +83,7 @@ const clarityId = import.meta.env.PUBLIC_CLARITY_ID;
   <slot />
   <ConsentBanner t={t} locale={locale} />
   <Analytics />
+  <VercelAnalytics />
 </body>
 </html>
 
@@ -104,8 +106,8 @@ const clarityId = import.meta.env.PUBLIC_CLARITY_ID;
     --shadow-md: 0 14px 38px rgba(46, 38, 64, .10);
     --shadow-lg: 0 28px 70px rgba(46, 38, 64, .14);
     --shadow-glow: 0 14px 40px rgba(255, 138, 91, .40);
-    --section-py: 120px;
-    --section-py-mobile: 78px;
+    --section-py: 102px;
+    --section-py-mobile: 66px;
   }
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
