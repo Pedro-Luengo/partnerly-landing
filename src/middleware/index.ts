@@ -3,10 +3,16 @@ import { SPANISH_COUNTRIES, SPANISH_LANG_RE, type Locale } from '../i18n/index';
 
 const LANG_COOKIE = 'pl_lang';
 
+// Paths the middleware must never touch
+const BYPASS_RE = /^\/(_|api\/|_astro\/)|\.[\w]+$/;
+
 export const onRequest = defineMiddleware(async (context, next) => {
   const { request, cookies, redirect } = context;
   const url = new URL(request.url);
   const path = url.pathname;
+
+  // Let API routes, internal Astro routes, and static assets pass straight through
+  if (BYPASS_RE.test(path)) return next();
 
   // Already on a locale route — just persist cookie
   if (path.startsWith('/en') || path.startsWith('/es')) {

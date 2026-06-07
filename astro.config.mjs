@@ -6,7 +6,6 @@ export default defineConfig({
   site: 'https://partnerly.io',
   output: 'server',
   adapter: vercel({
-    edgeMiddleware: true,
     webAnalytics: { enabled: false },
   }),
   integrations: [
