@@ -1,0 +1,200 @@
+---
+import type { Translations } from '../i18n/en';
+
+interface Props { t: Translations; }
+const { t } = Astro.props;
+const s = t.stages;
+
+// Stage orb styles (bg / color pairs)
+const orbStyles = [
+  'background:rgba(255,212,94,.20);color:var(--amber-ink)',
+  'background:rgba(255,177,84,.20);color:var(--glow-coral)',
+  'background:rgba(255,138,91,.18);color:var(--glow-coral)',
+  'background:rgba(255,138,91,.22);color:var(--glow-coral)',
+  'background:rgba(127,181,166,.20);color:var(--sage-ink)',
+  'background:rgba(127,181,166,.26);color:var(--sage-ink)',
+];
+---
+
+<section class="stages-section">
+  <div class="wrap">
+    <span class="eyebrow reveal">{s.eyebrow}</span>
+    <h2 class="reveal">{s.h2}</h2>
+
+    <div class="arc reveal">
+      <div class="track" role="list">
+        <!-- Single -->
+        <div class="stage-node" role="listitem">
+          <span class="orb" style={orbStyles[0]}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 21v-8"/><path d="M12 13c-1.2-3.4-4.6-3.8-7-3.1.2 2.9 3 5 7 3.1z"/>
+              <path d="M12 11c.9-2.8 3.6-3.2 5.7-2.7-.2 2.4-2.6 4-5.7 2.7z"/>
+            </svg>
+          </span>
+          <span class="lab">{s.nodes[0]}</span>
+        </div>
+        <span class="conn" aria-hidden="true"></span>
+
+        <!-- Crush -->
+        <div class="stage-node" role="listitem">
+          <span class="orb" style={orbStyles[1]}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4l1.7 4.6 4.6 1.7-4.6 1.7L11 16.6l-1.7-4.6L4.7 10.3l4.6-1.7z"/>
+              <path d="M18.5 4.5l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6z"/>
+            </svg>
+          </span>
+          <span class="lab">{s.nodes[1]}</span>
+        </div>
+        <span class="conn" aria-hidden="true"></span>
+
+        <!-- Dating -->
+        <div class="stage-node" role="listitem">
+          <span class="orb" style={orbStyles[2]}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 5h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 4V7a2 2 0 0 1 2-2z"/>
+              <circle cx="9.5" cy="10.5" r="1.1" fill="currentColor" stroke="none"/>
+              <circle cx="14.5" cy="10.5" r="1.1" fill="currentColor" stroke="none"/>
+            </svg>
+          </span>
+          <span class="lab">{s.nodes[2]}</span>
+        </div>
+        <span class="conn" aria-hidden="true"></span>
+
+        <!-- Together -->
+        <div class="stage-node" role="listitem">
+          <span class="orb" style={orbStyles[3]}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="12" r="5.2"/>
+              <circle cx="15" cy="12" r="5.2"/>
+            </svg>
+          </span>
+          <span class="lab">{s.nodes[3]}</span>
+        </div>
+        <span class="conn" aria-hidden="true"></span>
+
+        <!-- Rough patch -->
+        <div class="stage-node" role="listitem">
+          <span class="orb" style={orbStyles[4]}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 16h10a3.5 3.5 0 0 0 .4-6.97A4.5 4.5 0 0 0 8.6 7.2 3.2 3.2 0 0 0 7 16z"/>
+              <line x1="9" y1="19" x2="8.4" y2="21"/><line x1="13" y1="19" x2="12.4" y2="21"/>
+            </svg>
+          </span>
+          <span class="lab">{s.nodes[4]}</span>
+        </div>
+        <span class="conn" aria-hidden="true"></span>
+
+        <!-- Healing -->
+        <div class="stage-node" role="listitem">
+          <span class="orb" style={orbStyles[5]}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 18a5 5 0 0 0-10 0"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+              <line x1="12" y1="4" x2="12" y2="6.5"/>
+              <line x1="5.5" y1="8.5" x2="7" y2="10"/>
+              <line x1="18.5" y1="8.5" x2="17" y2="10"/>
+            </svg>
+          </span>
+          <span class="lab">{s.nodes[5]}</span>
+        </div>
+      </div>
+
+      <div class="loop-note">
+        <span class="loop-ico" aria-hidden="true">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
+            <path d="M21 3v5h-5"/>
+            <path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+            <path d="M3 21v-5h5"/>
+          </svg>
+        </span>
+        {s.loop}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .stages-section { padding: var(--section-py) 0; }
+
+  .eyebrow {
+    font-size: 13px; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--glow-coral); display: block;
+  }
+  h2 {
+    font-size: clamp(29px, 3.7vw, 44px); font-weight: 800;
+    letter-spacing: -1.1px; line-height: 1.14; margin: 18px 0 0; max-width: 780px;
+  }
+
+  .arc {
+    margin-top: 68px;
+    background: var(--surface);
+    border: 1px solid var(--divider);
+    border-radius: 34px;
+    padding: 56px 48px;
+    box-shadow: var(--shadow-md);
+  }
+
+  .track {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--divider) transparent;
+  }
+
+  .stage-node {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    min-width: 108px;
+    text-align: center;
+  }
+
+  .orb {
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
+  }
+
+  .lab { font-size: 13px; font-weight: 700; color: var(--text-2); }
+
+  .conn {
+    flex: 1;
+    min-width: 22px;
+    height: 3px;
+    border-radius: 99px;
+    background: repeating-linear-gradient(90deg, var(--divider) 0 6px, transparent 6px 12px);
+  }
+
+  .loop-note {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 40px;
+    font-weight: 600;
+    color: var(--text-2);
+    font-size: 15px;
+  }
+
+  .loop-ico {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: rgba(127,181,166,.18);
+    color: var(--sage-ink);
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 860px) {
+    .arc { padding: 38px 26px; }
+  }
+</style>

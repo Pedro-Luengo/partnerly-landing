@@ -1,0 +1,96 @@
+---
+import type { Translations } from '../i18n/en';
+
+interface Props { t: Translations; }
+const { t } = Astro.props;
+const p = t.pillars;
+
+const iconStyles = [
+  'background:rgba(255,138,91,.13);color:var(--glow-coral)',
+  'background:rgba(255,212,94,.20);color:var(--amber-ink)',
+  'background:rgba(127,181,166,.18);color:var(--sage-ink)',
+];
+---
+
+<section class="pillars-section">
+  <div class="wrap">
+    <span class="eyebrow reveal">{p.eyebrow}</span>
+    <h2 class="reveal">{p.h2}</h2>
+
+    <div class="pillars">
+      <!-- Memory -->
+      <div class="pcard reveal">
+        <div class="picon" style={iconStyles[0]}>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/>
+            <path d="M12 8.4c-.7-1-2.4-.7-2.4.7 0 1.1 2.4 2.7 2.4 2.7s2.4-1.6 2.4-2.7c0-1.4-1.7-1.7-2.4-.7z"/>
+          </svg>
+        </div>
+        <h3>{p.cards[0].title}</h3>
+        <p>{p.cards[0].body}</p>
+      </div>
+
+      <!-- Growth -->
+      <div class="pcard reveal">
+        <div class="picon" style={iconStyles[1]}>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 17 9 11 13 15 21 6"/>
+            <polyline points="15 6 21 6 21 12"/>
+          </svg>
+        </div>
+        <h3>{p.cards[1].title}</h3>
+        <p>{p.cards[1].body}</p>
+      </div>
+
+      <!-- Heart -->
+      <div class="pcard reveal">
+        <div class="picon" style={iconStyles[2]}>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20s-7-4.4-7-9.4C5 7.4 7.4 6 9.4 7c1 .5 1.8 1.4 2.6 2.5.8-1.1 1.6-2 2.6-2.5 2-1 4.4.4 4.4 3.6 0 5-7 9.4-7 9.4z"/>
+          </svg>
+        </div>
+        <h3>{p.cards[2].title}</h3>
+        <p>{p.cards[2].body}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pillars-section { padding: var(--section-py) 0; }
+
+  .eyebrow { font-size: 13px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--glow-coral); display: block; }
+  h2 { font-size: clamp(29px, 3.7vw, 44px); font-weight: 800; letter-spacing: -1.1px; line-height: 1.14; margin: 18px 0 0; max-width: 780px; }
+
+  .pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-top: 66px;
+  }
+
+  .pcard {
+    padding: 42px 36px;
+    border-radius: 30px;
+    border: 1px solid var(--divider);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    transition: transform .35s cubic-bezier(0,0,.2,1), box-shadow .35s;
+  }
+  .pcard:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+
+  .picon {
+    width: 62px; height: 62px;
+    border-radius: 20px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 26px;
+  }
+
+  h3 { font-size: 21px; font-weight: 800; letter-spacing: -.3px; }
+  p { color: var(--text-2); font-size: 15px; font-weight: 500; margin-top: 12px; line-height: 1.6; }
+
+  @media (max-width: 860px) {
+    .pillars { grid-template-columns: 1fr; }
+  }
+</style>

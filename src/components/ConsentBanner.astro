@@ -1,0 +1,116 @@
+---
+import type { Translations } from '../i18n/en';
+import type { Locale } from '../i18n/index';
+
+interface Props { t: Translations; locale: Locale; }
+const { t } = Astro.props;
+---
+
+<div id="consent-banner" class="consent-banner" role="dialog" aria-label="Cookie consent" aria-live="polite" hidden>
+  <p class="consent-msg">{t.consent.message}</p>
+  <div class="consent-actions">
+    <button id="consent-reject" class="btn-ghost">{t.consent.reject}</button>
+    <button id="consent-accept" class="btn-accept">{t.consent.accept}</button>
+  </div>
+</div>
+
+<script>
+  const CONSENT_KEY = 'pl_consent';
+  const banner = document.getElementById('consent-banner') as HTMLElement;
+
+  function getConsent(): string | null {
+    return localStorage.getItem(CONSENT_KEY);
+  }
+
+  function setConsent(val: 'accepted' | 'rejected') {
+    localStorage.setItem(CONSENT_KEY, val);
+    if (banner) banner.hidden = true;
+    if (val === 'accepted') {
+      window.dispatchEvent(new CustomEvent('partnerly:consent-given'));
+    }
+  }
+
+  // Show banner if no decision yet
+  if (!getConsent() && banner) {
+    // Small delay so it doesn't pop immediately
+    setTimeout(() => { banner.hidden = false; }, 800);
+  }
+
+  // If already accepted, fire event so Analytics can load
+  if (getConsent() === 'accepted') {
+    window.dispatchEvent(new CustomEvent('partnerly:consent-given'));
+  }
+
+  document.getElementById('consent-accept')?.addEventListener('click', () => setConsent('accepted'));
+  document.getElementById('consent-reject')?.addEventListener('click', () => setConsent('rejected'));
+</script>
+
+<style>
+  .consent-banner {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background: var(--plum);
+    color: var(--cream);
+    border-radius: 20px;
+    padding: 18px 22px;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: min(540px, calc(100vw - 32px));
+    width: 100%;
+    animation: rise .4s cubic-bezier(0,0,.2,1);
+  }
+
+  .consent-banner[hidden] { display: none; }
+
+  .consent-msg {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: rgba(255,247,240,.8);
+    flex: 1;
+  }
+
+  .consent-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .btn-ghost {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,247,240,.25);
+    background: transparent;
+    color: rgba(255,247,240,.7);
+    cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .btn-ghost:hover { background: rgba(255,247,240,.1); color: var(--cream); }
+
+  .btn-accept {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 9px 16px;
+    border-radius: 999px;
+    border: none;
+    background: var(--grad);
+    color: var(--cream);
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(255,138,91,.35);
+    transition: transform .15s;
+  }
+  .btn-accept:hover { transform: scale(1.03); }
+
+  @media (max-width: 540px) {
+    .consent-banner { flex-direction: column; align-items: flex-start; gap: 14px; }
+  }
+</style>

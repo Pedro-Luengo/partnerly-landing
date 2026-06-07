@@ -1,0 +1,5 @@
+---
+// Root "/" — middleware handles redirect to /en or /es.
+// This file just satisfies Astro's routing; it should never actually render.
+return Astro.redirect('/en', 302);
+---

@@ -1,0 +1,79 @@
+---
+import type { Translations } from '../i18n/en';
+
+interface Props { t: Translations; }
+const { t } = Astro.props;
+const m = t.memory;
+---
+
+<section class="memory-section">
+  <div class="wrap">
+    <div class="band reveal">
+      <span class="eyebrow">{m.eyebrow}</span>
+      <h2>{m.h2}</h2>
+      <p class="lead" set:html={m.lead} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .memory-section { padding: var(--section-py) 0; }
+
+  .band {
+    background: var(--plum);
+    color: var(--cream);
+    border-radius: 38px;
+    padding: 88px 64px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .band::before {
+    content: "";
+    position: absolute;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,177,84,.35), transparent 70%);
+    top: -180px; right: -90px;
+    pointer-events: none;
+  }
+  .band::after {
+    content: "";
+    position: absolute;
+    width: 340px; height: 340px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(127,181,166,.28), transparent 70%);
+    bottom: -160px; left: -80px;
+    pointer-events: none;
+  }
+
+  .band > * { position: relative; }
+
+  .eyebrow {
+    font-size: 13px; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--xp-yellow); display: block;
+  }
+
+  h2 {
+    font-size: clamp(29px, 3.7vw, 44px); font-weight: 800;
+    letter-spacing: -1.1px; line-height: 1.14;
+    margin: 18px 0 0; max-width: 780px;
+    color: var(--cream); margin-inline: auto;
+  }
+
+  .lead {
+    color: rgba(240,233,228,.78);
+    font-size: 18px;
+    font-weight: 500;
+    max-width: 650px;
+    margin-top: 22px;
+    line-height: 1.65;
+    margin-inline: auto;
+  }
+  .lead :global(em) { font-style: italic; }
+
+  @media (max-width: 860px) {
+    .band { padding: 56px 30px; border-radius: 30px; }
+  }
+</style>

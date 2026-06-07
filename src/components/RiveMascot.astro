@@ -1,0 +1,143 @@
+---
+// Rive mascot — loads public/mascot.riv when present.
+// While the .riv doesn't exist, renders the CSS/SVG placeholder.
+// Rive inputs (respect exact casing): isListening, isThinking, isSpeaking,
+// isEmpathize, isSleeping (bool); celebrate, cheer, curious, wave,
+// tapReact, success (trigger); stageMood (number 0-6).
+---
+
+<div class="mascot-stage" aria-hidden="true">
+  <div class="halo"></div>
+
+  <!-- Rive canvas (shown when .riv loads) -->
+  <canvas id="mascot-canvas" class="mascot-canvas" width="340" height="380"></canvas>
+
+  <!-- SVG placeholder (shown until Rive loads or if .riv missing) -->
+  <div class="mascot-placeholder" id="mascot-placeholder">
+    <span class="spark s1"></span>
+    <span class="spark s2"></span>
+    <span class="spark s3"></span>
+    <svg width="226" height="254" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" class="mascot-svg">
+      <defs>
+        <linearGradient id="m-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFB154"/>
+          <stop offset="1" stop-color="#FF8A5B"/>
+        </linearGradient>
+      </defs>
+      <g transform="translate(160,160)">
+        <!-- Glow -->
+        <circle cx="0" cy="-6" r="96" fill="#FF8A5B" opacity="0.10"/>
+        <circle cx="0" cy="-6" r="80" fill="#FF8A5B" opacity="0.16"/>
+        <circle cx="0" cy="-6" r="66" fill="#FF8A5B" opacity="0.24"/>
+        <!-- Body -->
+        <path d="M0,-86 C26,-70 60,-46 62,-6 C64,40 36,66 0,66 C-36,66 -64,40 -62,-6 C-60,-46 -26,-70 0,-86 Z" fill="url(#m-grad)"/>
+        <!-- Cheeks -->
+        <ellipse cx="-34" cy="6" rx="9" ry="6" fill="#FF5E52" opacity="0.30"/>
+        <ellipse cx="34" cy="6" rx="9" ry="6" fill="#FF5E52" opacity="0.30"/>
+        <!-- Eyes -->
+        <ellipse cx="-22" cy="-14" rx="11" ry="15" fill="#2E2640"/>
+        <circle cx="-26" cy="-20" r="4" fill="#FFFFFF" opacity="0.9"/>
+        <ellipse cx="22" cy="-14" rx="11" ry="15" fill="#2E2640"/>
+        <circle cx="18" cy="-20" r="4" fill="#FFFFFF" opacity="0.9"/>
+        <!-- Smile -->
+        <path d="M-17,22 Q0,37 17,22" stroke="#2E2640" stroke-width="4" fill="none" stroke-linecap="round"/>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<script>
+  import { Rive, EventType } from '@rive-app/canvas';
+
+  const RIV_URL = '/mascot.riv';
+
+  async function rivExists(): Promise<boolean> {
+    try {
+      const r = await fetch(RIV_URL, { method: 'HEAD' });
+      return r.ok;
+    } catch { return false; }
+  }
+
+  async function initRive() {
+    if (!(await rivExists())) return;
+
+    const canvas = document.getElementById('mascot-canvas') as HTMLCanvasElement;
+    const placeholder = document.getElementById('mascot-placeholder');
+    if (!canvas) return;
+
+    const rive = new Rive({
+      src: RIV_URL,
+      canvas,
+      autoplay: true,
+      stateMachines: 'State Machine 1',
+      onLoad() {
+        canvas.style.display = 'block';
+        if (placeholder) placeholder.style.display = 'none';
+      },
+    });
+
+    // Listen for signup event to trigger celebrate/success
+    window.addEventListener('partnerly:signup', (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      try {
+        const inputs = rive.stateMachineInputs('State Machine 1');
+        const trigger = inputs?.find((i) => i.name === 'celebrate' || i.name === 'success');
+        if (trigger) trigger.fire();
+      } catch { /* Rive not ready */ }
+    });
+  }
+
+  initRive();
+</script>
+
+<style>
+  .mascot-stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: 440px;
+  }
+
+  .halo {
+    position: absolute;
+    width: 380px;
+    height: 380px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,177,84,.5), rgba(255,138,91,.18) 55%, transparent 72%);
+    filter: blur(8px);
+    animation: breathe 6s ease-in-out infinite;
+  }
+
+  .mascot-canvas {
+    display: none;
+    position: relative;
+    z-index: 1;
+    width: 340px;
+    height: 380px;
+  }
+
+  .mascot-placeholder {
+    position: relative;
+    z-index: 1;
+    animation: float 5.5s ease-in-out infinite;
+  }
+
+  .mascot-svg { display: block; }
+
+  .spark {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--xp-yellow);
+    box-shadow: 0 0 12px var(--xp-yellow);
+  }
+  .s1 { width: 14px; height: 14px; top: 8%; right: 14%; animation: twinkle 3s ease-in-out infinite; }
+  .s2 { width:  9px; height:  9px; top: 24%; left:  8%; animation: twinkle 3s ease-in-out infinite .8s; }
+  .s3 { width: 11px; height: 11px; bottom: 18%; right: 6%; animation: twinkle 3s ease-in-out infinite 1.6s; }
+
+  @media (max-width: 860px) {
+    .mascot-stage { min-height: 320px; }
+    .halo { width: 300px; height: 300px; }
+    .mascot-canvas { width: 260px; height: 290px; }
+    .mascot-svg { width: 178px; height: 200px; }
+  }
+</style>

@@ -1,0 +1,42 @@
+<svg width="512" height="512" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bodyGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFB154"/>
+      <stop offset="1" stop-color="#FF8A5B"/>
+    </linearGradient>
+  </defs>
+
+  <g id="glow" transform="translate(160,160)">
+    <circle cx="0" cy="-6" r="96" fill="#FF8A5B" opacity="0.10"/>
+    <circle cx="0" cy="-6" r="80" fill="#FF8A5B" opacity="0.16"/>
+    <circle cx="0" cy="-6" r="66" fill="#FF8A5B" opacity="0.24"/>
+  </g>
+
+  <g id="shadow" transform="translate(160,160)">
+    <ellipse cx="0" cy="92" rx="44" ry="9" fill="#2E2640" opacity="0.12"/>
+  </g>
+
+  <g id="body" transform="translate(160,160)">
+    <path d="M0,-86 C26,-70 60,-46 62,-6 C64,40 36,66 0,66 C-36,66 -64,40 -62,-6 C-60,-46 -26,-70 0,-86 Z" fill="url(#bodyGradient)"/>
+  </g>
+
+  <g id="cheek_left" transform="translate(160,160)">
+    <ellipse cx="-34" cy="6" rx="9" ry="6" fill="#FF5E52" opacity="0.30"/>
+  </g>
+  <g id="cheek_right" transform="translate(160,160)">
+    <ellipse cx="34" cy="6" rx="9" ry="6" fill="#FF5E52" opacity="0.30"/>
+  </g>
+
+  <g id="eye_left" transform="translate(160,160)">
+    <ellipse cx="-22" cy="-14" rx="11" ry="15" fill="#2E2640"/>
+    <circle cx="-26" cy="-20" r="4" fill="#FFFFFF" opacity="0.9"/>
+  </g>
+  <g id="eye_right" transform="translate(160,160)">
+    <ellipse cx="22" cy="-14" rx="11" ry="15" fill="#2E2640"/>
+    <circle cx="18" cy="-20" r="4" fill="#FFFFFF" opacity="0.9"/>
+  </g>
+
+  <g id="mouth" transform="translate(160,160)">
+    <path d="M-17,22 Q0,37 17,22" stroke="#2E2640" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

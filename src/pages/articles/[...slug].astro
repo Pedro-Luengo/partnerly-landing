@@ -1,0 +1,31 @@
+---
+// Content collection routes for future SEO articles.
+// Scaffold only — no articles yet.
+export const prerender = true;
+
+import { getCollection } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const articles = await getCollection('articles', ({ data }) => !data.draft);
+  return articles.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+};
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+<!doctype html>
+<html lang={entry.data.locale}>
+<head>
+  <meta charset="UTF-8" />
+  <title>{entry.data.title} — Partnerly</title>
+  <meta name="description" content={entry.data.description} />
+  {entry.data.noindex && <meta name="robots" content="noindex" />}
+</head>
+<body>
+  <Content />
+</body>
+</html>

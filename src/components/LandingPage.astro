@@ -1,0 +1,52 @@
+---
+import type { Locale } from '../i18n/index';
+import type { Translations } from '../i18n/en';
+import Base from '../layouts/Base.astro';
+import Nav from './Nav.astro';
+import Hero from './Hero.astro';
+import GapSection from './GapSection.astro';
+import StagesArc from './StagesArc.astro';
+import Pillars from './Pillars.astro';
+import MemoryBand from './MemoryBand.astro';
+import FinalCTA from './FinalCTA.astro';
+import Footer from './Footer.astro';
+
+interface Props { locale: Locale; t: Translations; }
+const { locale, t } = Astro.props;
+---
+
+<Base locale={locale} t={t}>
+  <div class="bg">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+  <div class="grain"></div>
+
+  <Nav t={t} locale={locale} />
+  <main>
+    <Hero t={t} locale={locale} />
+    <GapSection t={t} />
+    <StagesArc t={t} />
+    <Pillars t={t} />
+    <MemoryBand t={t} />
+    <FinalCTA t={t} locale={locale} />
+  </main>
+  <Footer t={t} locale={locale} />
+</Base>
+
+<!-- Intersection observer for .reveal animations -->
+<script>
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+  document.querySelectorAll('.reveal:not(.in)').forEach((el) => io.observe(el));
+</script>

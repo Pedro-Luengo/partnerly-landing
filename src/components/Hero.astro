@@ -1,0 +1,112 @@
+---
+import type { Translations } from '../i18n/en';
+import type { Locale } from '../i18n/index';
+import WaitlistForm from './WaitlistForm.astro';
+import RiveMascot from './RiveMascot.astro';
+
+interface Props { t: Translations; locale: Locale; }
+const { t, locale } = Astro.props;
+---
+
+<header class="hero-header">
+  <div class="wrap hero-grid">
+    <!-- Left: copy + form -->
+    <div class="hero-copy">
+      <span class="pill reveal in">
+        <span class="dot"></span>
+        {t.pill}
+      </span>
+
+      <h1 class="reveal in">
+        {t.hero.h1a} <span class="hl">{t.hero.h1b}</span>{t.hero.h1c}
+      </h1>
+
+      <p class="sub reveal in">{t.hero.sub}</p>
+
+      <div class="form-slot reveal in">
+        <WaitlistForm t={t} locale={locale} id="top" />
+      </div>
+    </div>
+
+    <!-- Right: mascot -->
+    <div class="hero-visual">
+      <RiveMascot />
+    </div>
+  </div>
+</header>
+
+<style>
+  .hero-header {
+    padding: 104px 0 80px;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr .95fr;
+    gap: 84px;
+    align-items: center;
+  }
+
+  .hero-copy { display: flex; flex-direction: column; }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    color: var(--glow-coral);
+    background: rgba(255, 138, 91, .12);
+    padding: 9px 18px;
+    border-radius: 999px;
+    width: fit-content;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--glow-coral);
+    box-shadow: 0 0 0 4px rgba(255, 138, 91, .18);
+    animation: pulse 2.4s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  h1 {
+    font-size: clamp(40px, 5.4vw, 64px);
+    font-weight: 800;
+    line-height: 1.06;
+    letter-spacing: -1.6px;
+    margin: 30px 0 24px;
+  }
+
+  .hl {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .sub {
+    font-size: clamp(17px, 1.6vw, 19px);
+    color: var(--text-2);
+    max-width: 520px;
+    font-weight: 500;
+    line-height: 1.65;
+  }
+
+  .form-slot { margin-top: 44px; max-width: 490px; }
+
+  .hero-visual { order: 2; }
+
+  @media (max-width: 860px) {
+    .hero-header { padding: 64px 0 56px; }
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .hero-visual { order: -1; }
+    .form-slot { max-width: 100%; }
+  }
+</style>

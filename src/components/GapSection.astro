@@ -1,0 +1,92 @@
+---
+import type { Translations } from '../i18n/en';
+
+interface Props { t: Translations; }
+const { t } = Astro.props;
+const g = t.gap;
+---
+
+<section class="gap-section">
+  <div class="wrap">
+    <span class="eyebrow reveal">{g.eyebrow}</span>
+    <h2 class="reveal">{g.h2}</h2>
+
+    <div class="gap-grid">
+      {g.cards.map((card) => (
+        <div class:list={['gcard reveal', card.isUs && 'us']}>
+          <p class:list={['strike', !card.isUs && 'line']}>{card.strike}</p>
+          <p class="punch">{card.punch}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .gap-section { padding: var(--section-py) 0; }
+
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--glow-coral);
+    display: block;
+  }
+
+  h2 {
+    font-size: clamp(29px, 3.7vw, 44px);
+    font-weight: 800;
+    letter-spacing: -1.1px;
+    line-height: 1.14;
+    margin: 18px 0 0;
+    max-width: 780px;
+  }
+
+  .gap-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-top: 64px;
+  }
+
+  .gcard {
+    background: var(--surface);
+    border: 1px solid var(--divider);
+    border-radius: 26px;
+    padding: 38px 34px;
+    box-shadow: var(--shadow-sm);
+    transition: transform .35s cubic-bezier(0,0,.2,1), box-shadow .35s;
+  }
+  .gcard:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+
+  .strike {
+    color: var(--text-3);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: .4px;
+    text-transform: uppercase;
+  }
+  .strike.line {
+    text-decoration: line-through;
+    text-decoration-color: rgba(46,38,64,.25);
+  }
+
+  .punch {
+    font-weight: 700;
+    font-size: 17px;
+    margin-top: 14px;
+    line-height: 1.45;
+  }
+
+  .gcard.us {
+    background: linear-gradient(135deg, #fff, #FFF4EC);
+    border-color: rgba(255, 138, 91, .3);
+  }
+  .gcard.us .strike { color: var(--glow-coral); }
+  .gcard.us .punch { color: var(--glow-coral); }
+
+  @media (max-width: 860px) {
+    .gap-grid { grid-template-columns: 1fr; }
+  }
+</style>

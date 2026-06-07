@@ -1,0 +1,51 @@
+---
+// Analytics pixels — only inject after consent is granted.
+// IDs are read from env at build time; if missing, no scripts are injected.
+---
+
+<script>
+  function loadGTM(id: string) {
+    if (document.querySelector(`script[src*="${id}"]`)) return;
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtm.js?id=${id}`;
+    document.head.appendChild(s);
+    // dataLayer push
+    (window as any).dataLayer = (window as any).dataLayer || [];
+    (window as any).dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+  }
+
+  function loadTikTok(id: string) {
+    if ((window as any).ttq) return;
+    const ttq = (window as any).ttq = (window as any).ttq || [];
+    ttq.methods = ['page','track','identify','instances','debug','on','off','once','ready','alias','group','enableCookie','disableCookie'];
+    ttq.setAndDefer = (t: any, e: string) => { t[e] = (...args: any[]) => { t.push([e, ...args]); }; };
+    ttq.methods.forEach((m: string) => ttq.setAndDefer(ttq, m));
+    const s = document.createElement('script');
+    s.type = 'text/javascript'; s.async = true;
+    s.src = `https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=${id}&lib=ttq`;
+    document.head.appendChild(s);
+    ttq.page();
+  }
+
+  function loadClarity(id: string) {
+    const w = window as any;
+    if (w.clarity) return;
+    w.clarity = w.clarity || function (...args: any[]) { (w.clarity.q = w.clarity.q || []).push(args); };
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = `https://www.clarity.ms/tag/${id}`;
+    document.head.appendChild(s);
+  }
+
+  function loadAll() {
+    const gtmId = (window as any).__GTM_ID;
+    const tiktokId = (window as any).__TIKTOK_ID;
+    const clarityId = (window as any).__CLARITY_ID;
+    if (gtmId) loadGTM(gtmId);
+    if (tiktokId) loadTikTok(tiktokId);
+    if (clarityId) loadClarity(clarityId);
+  }
+
+  window.addEventListener('partnerly:consent-given', loadAll, { once: true });
+</script>

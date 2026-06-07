@@ -1,0 +1,46 @@
+---
+import type { Translations } from '../i18n/en';
+import type { Locale } from '../i18n/index';
+import WaitlistForm from './WaitlistForm.astro';
+
+interface Props { t: Translations; locale: Locale; }
+const { t, locale } = Astro.props;
+const f = t.finalCta;
+---
+
+<section class="final-section">
+  <div class="wrap final">
+    <span class="eyebrow reveal">{f.eyebrow}</span>
+    <h2 class="reveal">{f.h2}</h2>
+    <p class="lead reveal">{f.lead}</p>
+
+    <div class="form-slot reveal">
+      <WaitlistForm t={t} locale={locale} id="bot" centered />
+    </div>
+  </div>
+</section>
+
+<style>
+  .final-section { padding: var(--section-py) 0; }
+
+  .final { text-align: center; }
+
+  .eyebrow {
+    font-size: 13px; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--glow-coral); display: block;
+  }
+
+  h2 {
+    font-size: clamp(29px, 3.7vw, 44px); font-weight: 800;
+    letter-spacing: -1.1px; line-height: 1.14;
+    margin: 18px 0 0; max-width: 780px; margin-inline: auto;
+  }
+
+  .lead {
+    color: var(--text-2); font-size: 18px; font-weight: 500;
+    max-width: 650px; margin-top: 22px; line-height: 1.65;
+    margin-inline: auto;
+  }
+
+  .form-slot { margin-top: 44px; }
+</style>

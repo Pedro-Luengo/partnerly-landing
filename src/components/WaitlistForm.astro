@@ -1,0 +1,243 @@
+---
+import type { Translations } from '../i18n/en';
+import type { Locale } from '../i18n/index';
+
+interface Props {
+  t: Translations;
+  locale: Locale;
+  id: string;       // unique suffix: 'top' | 'bot'
+  centered?: boolean;
+}
+const { t, locale, id, centered = false } = Astro.props;
+const inputId = `email-${id}`;
+const okId = `ok-${id}`;
+---
+
+<div class:list={['form-wrap', centered && 'centered']}>
+  <div class="form" id={`form-${id}`}>
+    <div class="field">
+      <input
+        id={inputId}
+        type="email"
+        inputmode="email"
+        placeholder={t.hero.inputPlaceholder}
+        aria-label="Email"
+        autocomplete="email"
+      />
+      <button type="button" data-form-id={id}>
+        {t.hero.cta}
+      </button>
+    </div>
+    <p class="note">{id === 'top' ? t.hero.note : t.finalCta.note}</p>
+  </div>
+
+  <div class="success" id={okId} role="status" aria-live="polite">
+    <h3>
+      <span class="check" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </span>
+      {t.success.heading}
+    </h3>
+    <p class="success-body">{t.success.body}</p>
+    <p class="success-body already" style="display:none">{t.success.alreadyBody}</p>
+  </div>
+</div>
+
+<script>
+  import { createClient } from '@supabase/supabase-js';
+
+  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
+  const SUPABASE_ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+  function getSource(): string {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('utm_source') || params.get('ref') || 'direct';
+  }
+
+  function getLocale(): string {
+    const m = window.location.pathname.match(/^\/(en|es)/);
+    return m ? m[1] : 'en';
+  }
+
+  function showSuccess(okId: string, already = false) {
+    const ok = document.getElementById(okId);
+    if (!ok) return;
+    const formId = okId.replace('ok-', 'form-');
+    const form = document.getElementById(formId);
+    if (form) form.style.display = 'none';
+    ok.classList.add('on');
+    if (already) {
+      ok.querySelector('.success-body:not(.already)')?.setAttribute('style', 'display:none');
+      const alreadyEl = ok.querySelector('.already') as HTMLElement | null;
+      if (alreadyEl) alreadyEl.style.display = '';
+    }
+    ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Trigger Rive celebrate
+    window.dispatchEvent(new CustomEvent('partnerly:signup', { detail: { already } }));
+  }
+
+  async function handleJoin(formId: string) {
+    const inputEl = document.getElementById(`email-${formId}`) as HTMLInputElement | null;
+    if (!inputEl) return;
+    const email = inputEl.value.trim();
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!re.test(email)) {
+      inputEl.focus();
+      inputEl.style.boxShadow = '0 0 0 2px var(--glow-coral)';
+      setTimeout(() => { inputEl.style.boxShadow = ''; }, 1200);
+      return;
+    }
+
+    const btn = document.querySelector(`[data-form-id="${formId}"]`) as HTMLButtonElement | null;
+    if (btn) { btn.disabled = true; btn.style.opacity = '.7'; }
+
+    const okId = `ok-${formId}`;
+
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+      showSuccess(okId);
+      return;
+    }
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const { error } = await supabase.from('waitlist').insert({
+      email,
+      source: getSource(),
+      locale: getLocale(),
+    });
+
+    // 23505 = unique_violation (email already in list) → treat as success
+    const already = error?.code === '23505';
+    if (!error || already) {
+      showSuccess(okId, already);
+    } else {
+      // Re-enable on unexpected error
+      if (btn) { btn.disabled = false; btn.style.opacity = ''; }
+      console.error('Waitlist error', error);
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('[data-form-id]') as HTMLElement | null;
+    if (btn) {
+      const id = btn.getAttribute('data-form-id');
+      if (id) handleJoin(id);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const input = e.target as HTMLElement;
+    if (input.tagName === 'INPUT' && input.id?.startsWith('email-')) {
+      const id = input.id.replace('email-', '');
+      handleJoin(id);
+    }
+  });
+</script>
+
+<style>
+  .form-wrap { width: 100%; }
+  .form-wrap.centered .form,
+  .form-wrap.centered .success { margin-inline: auto; }
+
+  .form { max-width: 490px; }
+
+  .field {
+    display: flex;
+    gap: 10px;
+    background: var(--surface);
+    padding: 9px;
+    border-radius: 999px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--divider);
+  }
+
+  .field input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 0 22px;
+    color: var(--plum);
+    transition: box-shadow .2s;
+  }
+  .field input::placeholder { color: var(--text-3); }
+
+  .field button {
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 15px;
+    white-space: nowrap;
+    padding: 16px 30px;
+    border: none;
+    border-radius: 999px;
+    background: var(--grad);
+    color: var(--cream);
+    cursor: pointer;
+    box-shadow: var(--shadow-glow);
+    transition: transform .2s cubic-bezier(.34, 1.56, .64, 1), opacity .2s;
+    flex-shrink: 0;
+  }
+  .field button:hover { transform: scale(1.03); }
+  .field button:active { transform: scale(.96); }
+  .field button:disabled { cursor: not-allowed; }
+
+  .note {
+    font-size: 13px;
+    color: var(--text-3);
+    margin-top: 18px;
+    padding-left: 8px;
+    font-weight: 500;
+  }
+  .form-wrap.centered .note { text-align: center; padding-left: 0; }
+
+  .success {
+    display: none;
+    max-width: 490px;
+    background: var(--surface);
+    border: 1px solid var(--divider);
+    border-radius: 26px;
+    padding: 28px 30px;
+    box-shadow: var(--shadow-md);
+    animation: rise .5s cubic-bezier(0, 0, .2, 1);
+  }
+  .success.on { display: block; }
+
+  .success h3 {
+    font-size: 18px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .success p {
+    color: var(--text-2);
+    font-size: 15px;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  .check {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--sage);
+    display: grid;
+    place-items: center;
+    color: #fff;
+    flex: none;
+  }
+
+  @media (max-width: 480px) {
+    .field { flex-direction: column; border-radius: 20px; gap: 8px; }
+    .field input { padding: 14px 18px; }
+    .field button { width: 100%; justify-content: center; border-radius: 14px; }
+  }
+</style>

@@ -1,0 +1,22 @@
+{
+  "name": "partnerly-landing",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/vercel": "^8.1.2",
+    "@fontsource/plus-jakarta-sans": "^5.1.1",
+    "@rive-app/canvas": "^2.23.9",
+    "@supabase/supabase-js": "^2.47.10",
+    "astro": "^5.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}
