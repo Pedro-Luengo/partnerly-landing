@@ -67,7 +67,7 @@ const okId = `ok-${id}`;
     setTimeout(() => { el.style.display = 'none'; }, 6000);
   }
 
-  function showSuccess(formId: string, already = false) {
+  function showSuccess(formId: string, already = false, scroll = true) {
     const okId = `ok-${formId}`;
     const ok = document.getElementById(okId);
     if (!ok) return;
@@ -82,8 +82,16 @@ const okId = `ok-${id}`;
       const alreadyEl = ok.querySelector('.already') as HTMLElement | null;
       if (alreadyEl) alreadyEl.style.display = '';
     }
-    ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (scroll) ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
     window.dispatchEvent(new CustomEvent('partnerly:signup', { detail: { already } }));
+  }
+
+  // Restore success state on page load if user already signed up
+  if (localStorage.getItem('pl_signup')) {
+    document.querySelectorAll<HTMLElement>('[data-form-id]').forEach(btn => {
+      const id = btn.getAttribute('data-form-id');
+      if (id) showSuccess(id, false, false);
+    });
   }
 
   async function handleJoin(formId: string) {
@@ -111,6 +119,7 @@ const okId = `ok-${id}`;
       const data = await res.json() as { ok: boolean; already?: boolean; error?: string; code?: string };
 
       if (data.ok) {
+        localStorage.setItem('pl_signup', '1');
         showSuccess(formId, data.already);
       } else {
         console.error('[Partnerly] /api/waitlist error:', data.error, data.code);

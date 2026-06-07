@@ -56,12 +56,50 @@ const altLocale = locale === 'en' ? 'es' : 'en';
       <a href={`/${altLocale}`} class="lang-btn" aria-label={t.nav.langSwitchLabel} data-lang-switch={altLocale}>
         {t.nav.langSwitch}
       </a>
-      <button class="nav-cta" onclick="document.getElementById('email-top').focus()">
+      <button
+        id="nav-cta"
+        class="nav-cta"
+        data-label-default={t.nav.cta}
+        data-label-signed={t.nav.ctaSigned}
+        onclick="document.getElementById('email-top').focus()"
+      >
         {t.nav.cta}
       </button>
     </div>
   </div>
 </nav>
+
+<script>
+  const SIGNUP_KEY = 'pl_signup';
+
+  function setSignedState() {
+    const btn = document.getElementById('nav-cta') as HTMLButtonElement | null;
+    if (!btn) return;
+    const label = btn.dataset.labelSigned ?? btn.dataset.labelDefault ?? '';
+    btn.textContent = label;
+    btn.classList.add('nav-cta--signed');
+    btn.onclick = null;
+  }
+
+  if (localStorage.getItem(SIGNUP_KEY)) setSignedState();
+
+  window.addEventListener('partnerly:signup', () => {
+    localStorage.setItem(SIGNUP_KEY, '1');
+    setSignedState();
+  });
+
+  // Scroll-hide nav (shows on scroll up, hides on scroll down past 80px)
+  let lastY = window.scrollY;
+  const navEl = document.querySelector('nav') as HTMLElement | null;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (navEl) {
+      if (y > lastY && y > 80) navEl.classList.add('nav--hidden');
+      else navEl.classList.remove('nav--hidden');
+    }
+    lastY = y;
+  }, { passive: true });
+</script>
 
 <style>
   nav {
@@ -72,7 +110,9 @@ const altLocale = locale === 'en' ? 'es' : 'en';
     -webkit-backdrop-filter: blur(14px);
     background: rgba(255, 247, 240, .72);
     border-bottom: 1px solid var(--divider);
+    transition: transform .3s cubic-bezier(.4, 0, .2, 1);
   }
+  nav.nav--hidden { transform: translateY(-100%); }
 
   .nav-in {
     display: flex;
@@ -127,6 +167,15 @@ const altLocale = locale === 'en' ? 'es' : 'en';
     transition: transform .2s cubic-bezier(.34, 1.56, .64, 1);
   }
   .nav-cta:hover { transform: translateY(-2px) scale(1.02); }
+
+  .nav-cta--signed {
+    background: rgba(127, 181, 166, .18);
+    color: var(--sage-ink);
+    box-shadow: none;
+    cursor: default;
+    font-size: 13px;
+  }
+  .nav-cta--signed:hover { transform: none; }
 
   @media (max-width: 480px) {
     .lang-btn { display: none; }

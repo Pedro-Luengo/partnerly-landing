@@ -11,6 +11,7 @@ export const en = {
 
   nav: {
     cta: 'Join the waitlist',
+    ctaSigned: "You're in — see you at launch",
     langSwitch: 'ES',
     langSwitchLabel: 'Ver en español',
   },

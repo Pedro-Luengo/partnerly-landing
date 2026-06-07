@@ -13,6 +13,7 @@ export const es: Translations = {
 
   nav: {
     cta: 'Únete a la lista',
+    ctaSigned: 'Estás dentro — nos vemos al lanzar',
     langSwitch: 'EN',
     langSwitchLabel: 'Switch to English',
   },
